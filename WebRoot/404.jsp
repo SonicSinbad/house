@@ -122,7 +122,6 @@
 	<!-- inline scripts related to this page -->
 	<script type="text/javascript">
 		$(top.hangge());
-		
 	</script>
 
 
