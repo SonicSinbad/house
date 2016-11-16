@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MhouseMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		TB_MHOUSE
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		TFQZH,	
+		XQMC,	
+		FWZL,	
+		SZCS,	
+		ZCS,	
+		FWCX,	
+		JZMJ,	
+		JCNF,	
+		FYHS,	
+		CQLB,	
+		QZNX,	
+		ISONLYONE,	
+		ZXCD,	
+		WYGS,	
+		YNKEY,	
+		TEL,	
+		CQR,	
+		FWLY,	
+		FYLB,	
+		FYBH,	
+		BZ,	
+		MHOUSE_ID,
+		USERID,
+		CSXZ,
+		AREA,
+		CZR,
+		CZSJ,
+		FWZJ
+		
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{TFQZH},	
+		#{XQMC},	
+		#{FWZL},	
+		#{SZCS},	
+		#{ZCS},	
+		#{FWCX},	
+		#{JZMJ},	
+		#{JCNF},	
+		#{FYHS},	
+		#{CQLB},	
+		#{QZNX},	
+		#{ISONLYONE},	
+		#{ZXCD},	
+		#{WYGS},	
+		#{YNKEY},	
+		#{TEL},	
+		#{CQR},	
+		#{FWLY},	
+		#{FYLB},	
+		#{FYBH},	
+		#{BZ},	
+		#{MHOUSE_ID},
+		#{USERID},
+		#{CSXZ},
+		#{AREA},
+		#{CZR},
+		#{CZSJ},
+		#{FWZJ}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MHOUSE_ID = #{MHOUSE_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			TFQZH = #{TFQZH},
+			XQMC = #{XQMC},
+			FWZL = #{FWZL},
+			SZCS = #{SZCS},
+			ZCS = #{ZCS},
+			FWCX = #{FWCX},
+			JZMJ = #{JZMJ},
+			JCNF = #{JCNF},
+			FYHS = #{FYHS},
+			CQLB = #{CQLB},
+			QZNX = #{QZNX},
+			ISONLYONE = #{ISONLYONE},
+			ZXCD = #{ZXCD},
+			WYGS = #{WYGS},
+			YNKEY = #{YNKEY},
+			TEL = #{TEL},
+			CQR = #{CQR},
+			FWLY = #{FWLY},
+			FYLB = #{FYLB},
+			FYBH = #{FYBH},
+			BZ = #{BZ},
+			CSXZ = #{CSXZ},
+			AREA = #{AREA},
+			CZR = #{CZR},
+			CZSJ = #{CZSJ},
+			FWZJ = #{FWZJ}
+		where 
+		MHOUSE_ID = #{MHOUSE_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			MHOUSE_ID = #{MHOUSE_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				
+				area LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+				xqmc LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or
+				czsj BETWEEN #{pd.lastLoginStart} AND #{pd.lastLoginEnd}
+				
+				<!--	根据需求自己加检索条件
+					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				-->
+				)
+		</if>
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MHOUSE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- fh313596790qq(青苔) -->
+</mapper>
