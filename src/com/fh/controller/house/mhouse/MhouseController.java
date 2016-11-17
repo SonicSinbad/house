@@ -112,13 +112,22 @@ public class MhouseController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		String keywords = pd.getString("keywords");				//关键词检索条件
+		String name = pd.getString("name");
 		String lastLoginStart = pd.getString("lastLoginStart");
 		String lastLoginEnd = pd.getString("lastLoginEnd");
-		System.out.println("==============="+lastLoginStart);
-		System.out.println("==============="+lastLoginEnd);
 		
-		if(null != keywords && !"".equals(keywords)){
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		String sessionUserid = user.getUSER_ID();
+		mv.addObject("userid",sessionUserid);
+		
+		if("7".equals(name) || name == "7"){
+			pd.put("keywords", user.getNAME());
+			pd.put("name", Integer.parseInt(name.trim()));
+		}
+		else if(null != keywords && !"".equals(keywords) && null != name && !"".equals(name)){
 			pd.put("keywords", keywords.trim());
+			pd.put("name", Integer.parseInt(name.trim()));
 		}
 		
 		if(null != lastLoginStart && !"".equals(lastLoginStart) && null != lastLoginEnd && !"".equals(lastLoginEnd)){
@@ -133,10 +142,6 @@ public class MhouseController extends BaseController {
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		
-		Session session = Jurisdiction.getSession();
-		User user = (User) session.getAttribute(Const.SESSION_USER);
-		String sessionUserid = user.getUSER_ID();
-		mv.addObject("userid",sessionUserid);
 		return mv;
 	}
 	

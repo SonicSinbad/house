@@ -144,22 +144,49 @@
 		<include refid="tableName"></include>
 		where 1=1
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
-			and
-				(
-				
+		
+			<if test="pd.name == 1">
+					and
 				area LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
-					 or 
-				xqmc LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
-					or
-				czsj BETWEEN #{pd.lastLoginStart} AND #{pd.lastLoginEnd}
+			</if>
+			<if test="pd.name == 2">
+					and
+				csxz LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>			
+			<if test="pd.name == 3">
+					and
+				fyhs LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>
+			<if test="pd.name == 4">
+					and
+				fwcx LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>
+			<if test="pd.name == 5">
+					and
+				zxcd LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>
+			<if test="pd.name == 6">
+					and
+				cqlb LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>
+			<if test="pd.name == 7">
+					and
+				czr LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>			
 				
 				<!--	根据需求自己加检索条件
 					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 or 
 					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
 				-->
-				)
+				
 		</if>
+		<if test="pd.lastLoginStart != null and pd.lastLoginStart != '' and pd.lastLoginEnd != null and pd.lastLoginEnd != ''">
+				and
+			czsj BETWEEN #{pd.lastLoginStart} AND #{pd.lastLoginEnd}
+		</if>
+		
+		ORDER BY CZSJ DESC
 	</select>
 	
 	<!-- 列表(全部) -->

@@ -46,10 +46,13 @@
 								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginEnd" name="lastLoginEnd"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
 								<td style="vertical-align:top;padding-left:2px;">
 								 	<select class="chosen-select form-control" name="name" id="id" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
-									<option value=""></option>
-									<option value="">全部</option>
-									<option value="">1</option>
-									<option value="">2</option>
+									<option value="1">行政区</option>
+									<option value="2">层数性质</option>
+									<option value="3">房源户式</option>
+									<option value="4">房屋朝向</option>
+									<option value="5">装修程度</option>
+									<option value="6">产权类别</option>
+									<option value="7">操作人</option>
 								  	</select>
 								</td>
 								<c:if test="${QX.cha == 1 }">
