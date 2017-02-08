@@ -42,17 +42,29 @@
 										</span>
 									</div>
 								</td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginStart" id="lastLoginStart"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginEnd" name="lastLoginEnd"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginStart" id="lastLoginStart"  value="${pd.lastLoginStart}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginEnd" name="lastLoginEnd"  value="${pd.lastLoginEnd}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
 								<td style="vertical-align:top;padding-left:2px;">
 								 	<select class="chosen-select form-control" name="name" id="id" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
-									<option value="1">行政区</option>
-									<option value="2">层数性质</option>
-									<option value="3">房源户式</option>
-									<option value="4">房屋朝向</option>
-									<option value="5">装修程度</option>
-									<option value="6">产权类别</option>
-									<option value="7">操作人</option>
+									<option value="1" <c:if test="${pd.name == '1' }">selected</c:if>>行政区</option>
+									<option value="2" <c:if test="${pd.name == '2' }">selected</c:if>>层数性质</option>
+									<option value="3" <c:if test="${pd.name == '3' }">selected</c:if>>房源户式</option>
+									<option value="4" <c:if test="${pd.name == '4' }">selected</c:if>>房屋朝向</option>
+									<option value="5" <c:if test="${pd.name == '5' }">selected</c:if>>装修程度</option>
+									<option value="6" <c:if test="${pd.name == '6' }">selected</c:if>>产权类别</option>
+									<option value="7" <c:if test="${pd.name == '7' }">selected</c:if>>操作人</option>
+									<option value="8" <c:if test="${pd.name == '8' }">selected</c:if>>小区名称</option>
+								  	</select>
+								</td>
+								<td style="vertical-align:top;padding-left:2px;">
+								 	<select class="chosen-select form-control" name="sjzmj" id="sjzmj" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
+								 	<option value="" <c:if test="${pd.sjzmj == '' }">selected</c:if>>选择面积</option>
+									<option value="1" <c:if test="${pd.sjzmj == '1' }">selected</c:if>>0~40</option>
+									<option value="2" <c:if test="${pd.sjzmj == '2' }">selected</c:if>>40~60</option>
+									<option value="3" <c:if test="${pd.sjzmj == '3' }">selected</c:if>>60~80</option>
+									<option value="4" <c:if test="${pd.sjzmj == '4' }">selected</c:if>>80~100</option>
+									<option value="5" <c:if test="${pd.sjzmj == '5' }">selected</c:if>>100~120</option>
+									<option value="6" <c:if test="${pd.sjzmj == '6' }">selected</c:if>>120+</option>
 								  	</select>
 								</td>
 								<c:if test="${QX.cha == 1 }">
@@ -68,7 +80,7 @@
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
-									<th class="center" style="width:50px;">序号</th>
+									<th class="center" style="width:50px;">房屋编号</th>
 									<th class="center" >行政区</th>
 									<th class="center" >小区名称</th>
 									<th class="center">房屋坐落</th>
@@ -93,7 +105,9 @@
 								<c:when test="${not empty varList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${varList}" var="var" varStatus="vs">
-										<tr>
+									<!-- ===========房源锁定=========== -->
+									<c:if test="${1 == var.FYBH }">
+										<tr style="color:red;">
 											<td class='center'>
 												<label class="pos-rel">
 													<c:if test="${userid == var.USERID }">
@@ -101,7 +115,7 @@
 													</c:if>
 													<span class="lbl"></span></label>
 											</td>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center' style="width: 30px;">${var.TFQZH}</td>
 											<td class='center'>${var.AREA}</td>
 											<td class='center'>${var.XQMC}</td>
 											<td class='center'>${var.FWZL}</td>
@@ -138,6 +152,80 @@
 													<a class="btn btn-xs btn-success" onclick="viewvideo('${var.MHOUSE_ID}');">
 														<i class="ace-icon fa fa-film bigger-120" title="预览视频"></i>
 													</a>
+													
+													<c:if test="${1 == var.FYBH }">
+													<a class="btn btn-xs btn-success" title="解锁" onclick="jiesuo('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-lock" title="解锁"></i>
+													</a>
+													</c:if>
+													<c:if test="${userid == var.USERID }">
+													<a class="btn btn-xs btn-success" title="预定" onclick="yuding('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-gavel" title="预定"></i>
+													</a>
+													<a class="btn btn-xs btn-danger" onclick="del('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
+													</a>
+													</c:if>
+												</div>
+												
+											</td>
+										</tr>
+									</c:if>
+									<!-- ===========房源未锁定=========== -->
+									<c:if test="${0 == var.FYBH }">
+										<tr>
+											<td class='center'>
+												<label class="pos-rel">
+													<c:if test="${userid == var.USERID }">
+														<input type='checkbox' name='ids' value="${var.MHOUSE_ID}" class="ace" />
+													</c:if>
+													<span class="lbl"></span></label>
+											</td>
+											<td class='center' style="width: 30px;">${var.TFQZH}</td>
+											<td class='center'>${var.AREA}</td>
+											<td class='center'>${var.XQMC}</td>
+											<td class='center'>${var.FWZL}</td>
+											<td class='center'>${var.ZCS}</td>
+											<td class='center'>${var.SZCS}</td>
+											<td class='center'>${var.CSXZ}</td>
+											<td class='center'>${var.JZMJ}</td>
+											<td class='center'>${var.FWCX}</td>
+											<td class='center'>${var.FYHS}</td>
+											<td class='center'>${var.ZXCD}</td>
+											<td class='center'>${var.CQLB}</td> 
+											<td class='center'>${var.FWZJ}</td>
+											<td class='center'>${var.CZR}</td>
+											<td class='center'>${var.CZSJ}</td>
+											<td class="center">
+												<c:if test="${QX.edit != 1 && QX.del != 1 }">
+												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>
+												</c:if>
+												<div class="hidden-sm hidden-xs btn-group">
+													<c:if test="${userid == var.USERID }">
+													<a class="btn btn-xs btn-success" title="编辑" onclick="edit('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
+													</a>
+													<a class="btn btn-xs btn-success" onclick="addpic('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-folder-open bigger-120" title="添加图片和视频"></i>
+													</a>
+													</c:if>
+													<a class="btn btn-xs btn-success" onclick="view('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-desktop bigger-120" title="预览信息"></i>
+													</a>
+													<a class="btn btn-xs btn-success" onclick="viewpic('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-camera bigger-120" title="预览图片"></i>
+													</a>
+													<a class="btn btn-xs btn-success" onclick="viewvideo('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-film bigger-120" title="预览视频"></i>
+													</a>
+													<a class="btn btn-xs btn-success" title="预定" onclick="yuding('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-gavel" title="预定"></i>
+													</a>
+													<c:if test="${1 == var.FYBH }">
+													<a class="btn btn-xs btn-success" title="解锁" onclick="jiesuo('${var.MHOUSE_ID}');">
+														<i class="ace-icon fa fa-lock" title="解锁"></i>
+													</a>
+													</c:if>
 													<c:if test="${userid == var.USERID }">
 													<a class="btn btn-xs btn-danger" onclick="del('${var.MHOUSE_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
@@ -147,6 +235,38 @@
 												
 											</td>
 										</tr>
+									</c:if>
+									<!-- ===========房源预定=========== -->
+									<c:if test="${2 == var.FYBH }">
+										<tr  style="color:green;">
+											<td class='center'>
+												<label class="pos-rel">
+													<c:if test="${userid == var.USERID }">
+														<input type='checkbox' name='ids' value="${var.MHOUSE_ID}" class="ace" />
+													</c:if>
+													<span class="lbl"></span></label>
+											</td>
+											<td class='center' style="width: 30px;">${var.TFQZH}</td>
+											<td class='center'>${var.AREA}</td>
+											<td class='center'>${var.XQMC}</td>
+											<td class='center'>${var.FWZL}</td>
+											<td class='center'>${var.ZCS}</td>
+											<td class='center'>${var.SZCS}</td>
+											<td class='center'>${var.CSXZ}</td>
+											<td class='center'>${var.JZMJ}</td>
+											<td class='center'>${var.FWCX}</td>
+											<td class='center'>${var.FYHS}</td>
+											<td class='center'>${var.ZXCD}</td>
+											<td class='center'>${var.CQLB}</td> 
+											<td class='center'>${var.FWZJ}</td>
+											<td class='center'>${var.CZR}</td>
+											<td class='center'>${var.CZSJ}</td>
+											<td class="center">
+												
+												
+											</td>
+										</tr>
+									</c:if>
 									
 									</c:forEach>
 									</c:if>
@@ -173,6 +293,9 @@
 									</c:if>
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-sm btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
+									</c:if>
+									<c:if test="${QX.del == 1 }">
+									<a class="btn btn-sm btn-success" onclick="guidangAll('确定要归档选中的数据吗?');">成交归档</a>
 									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -340,6 +463,40 @@
 			 };
 			 diag.show();
 		}
+		//解锁
+		function jiesuo(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="解锁";
+			 diag.URL = '<%=basePath%>mhouse/goJiesuo.do?MHOUSE_ID='+Id;
+			 diag.Width = 650;
+			 diag.Height = 455;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage(${page.currentPage});
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		//预定
+		function yuding(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="解锁";
+			 diag.URL = '<%=basePath%>mhouse/goYuding.do?MHOUSE_ID='+Id;
+			 diag.Width = 650;
+			 diag.Height = 455;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage(${page.currentPage});
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
 		//修改
 		function view(Id){
 			 top.jzts();
@@ -435,6 +592,50 @@
 			});
 		};
 		
+		function guidangAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要归档选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>mhouse/guidangAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											nextPage(${page.currentPage});
+									 });
+								}
+							});
+						}
+					}
+				}
+			});
+		};
 		//导出excel
 		function toExcel(){
 			window.location.href='<%=basePath%>zhouse/excel.do';

@@ -75,7 +75,14 @@ public class ZhouseService implements ZhouseManager{
 	public PageData findById(PageData pd)throws Exception{
 		return (PageData)dao.findForObject("ZhouseMapper.findById", pd);
 	}
-	
+	/**列表(全部)
+	 * @param pd
+	 * @throws Exception
+	 */
+	@Override
+	public PageData findByBh(PageData pd)throws Exception{
+		return (PageData)dao.findForObject("ZhouseMapper.findByBh", pd);
+	}
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
@@ -84,6 +91,14 @@ public class ZhouseService implements ZhouseManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("ZhouseMapper.deleteAll", ArrayDATA_IDS);
 	}
-	
+	/**批量成交
+	 * @param ArrayDATA_IDS
+	 * @throws Exception
+	 */
+	@Override
+	public void guidangAll(String[] ArrayDATA_IDS)throws Exception{
+		dao.delete("ZhouseMapper.guidangAll", ArrayDATA_IDS);
+		dao.delete("ZhouseMapper.deleteAll", ArrayDATA_IDS);
+	}
 }
 

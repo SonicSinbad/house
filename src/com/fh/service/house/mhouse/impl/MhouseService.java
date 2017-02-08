@@ -75,7 +75,14 @@ public class MhouseService implements MhouseManager{
 	public PageData findById(PageData pd)throws Exception{
 		return (PageData)dao.findForObject("MhouseMapper.findById", pd);
 	}
-	
+	/**列表(全部)
+	 * @param pd
+	 * @throws Exception
+	 */
+	@Override
+	public PageData findByBh(PageData pd)throws Exception{
+		return (PageData)dao.findForObject("MhouseMapper.findByBh", pd);
+	}
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
@@ -84,6 +91,14 @@ public class MhouseService implements MhouseManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("MhouseMapper.deleteAll", ArrayDATA_IDS);
 	}
-	
+	/**批量成交
+	 * @param ArrayDATA_IDS
+	 * @throws Exception
+	 */
+	@Override
+	public void guidangAll(String[] ArrayDATA_IDS)throws Exception{
+		dao.delete("MhouseMapper.guidangAll", ArrayDATA_IDS);
+		dao.delete("MhouseMapper.deleteAll", ArrayDATA_IDS);
+	}
 }
 

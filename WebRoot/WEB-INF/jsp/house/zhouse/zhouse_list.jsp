@@ -42,14 +42,20 @@
 										</span>
 									</div>
 								</td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginStart" id="lastLoginStart"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
-								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginEnd" name="lastLoginEnd"  value="" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginStart" id="lastLoginStart"  value="${pd.lastLoginStart }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="开始日期" title="开始日期"/></td>
+								<td style="padding-left:2px;"><input class="span10 date-picker" name="lastLoginEnd" name="lastLoginEnd"  value="${pd.lastLoginEnd }" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="结束日期" title="结束日期"/></td>
+								<td style="vertical-align:top;padding-left:2px;">
 								<td style="vertical-align:top;padding-left:2px;">
 								 	<select class="chosen-select form-control" name="name" id="id" data-placeholder="请选择" style="vertical-align:top;width: 120px;">
-									<option value=""></option>
-									<option value="">全部</option>
-									<option value="">1</option>
-									<option value="">2</option>
+										<option value="1" <c:if test="${pd.name == '1' }">selected</c:if>>行政区</option>
+										<option value="2" <c:if test="${pd.name == '2' }">selected</c:if>>小区名称</option>
+										<option value="3" <c:if test="${pd.name == '3' }">selected</c:if>>房源户式</option>
+										<option value="4" <c:if test="${pd.name == '4' }">selected</c:if>>房屋朝向</option>
+										<option value="5" <c:if test="${pd.name == '5' }">selected</c:if>>装修程度</option>
+										<option value="6" <c:if test="${pd.name == '6' }">selected</c:if>>付款方式</option>
+										<option value="7" <c:if test="${pd.name == '7' }">selected</c:if>>操作人</option>
+										<option value="8" <c:if test="${pd.name == '8' }">selected</c:if>>小区名称</option>
+										
 								  	</select>
 								</td>
 								<c:if test="${QX.cha == 1 }">
@@ -65,7 +71,8 @@
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
-									<th class="center" style="width:50px;">序号</th>
+									<th class="center" style="width:50px;">房屋编号</th>
+									<th class="center" >行政区</th>
 									<th class="center">出租房源</th>
 									<th class="center">小区名称</th>
 									<th class="center">面积</th>
@@ -75,11 +82,9 @@
 									<th class="center">装修情况</th>
 									<th class="center">月租金</th>
 									<th class="center">付款方式</th>
-									<th class="center">押金金额</th>
 									
 									<th class="center">房主姓名</th>
 									<th class="center">联系方式</th>
-									<th class="center">是否委托</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -102,6 +107,7 @@
 <span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${var.AREA}</td>
 											<td class='center'>${var.CZFY}</td>
 											<td class='center'>${var.XQMC}</td>
 											<td class='center'>${var.FWMJ}</td>
@@ -111,11 +117,9 @@
 											<td class='center'>${var.ZXQK}</td>
 											<td class='center'>${var.YZJ}</td>
 											<td class='center'>${var.FKFS}</td>
-											<td class='center'>${var.YJJE}</td>
 											
 											<td class='center'>${var.FZXM}</td>
 											<td class='center'>${var.LXFS}</td>
-											<td class='center'>${var.YNKEY}</td>
 											
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
@@ -174,6 +178,9 @@
 									</c:if>
 									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-sm btn-danger" onclick="makeAll('确定要删除选中的数据吗?');" title="批量删除" ><i class='ace-icon fa fa-trash-o bigger-120'></i></a>
+									</c:if>
+									<c:if test="${QX.del == 1 }">
+									<a class="btn btn-sm btn-success" onclick="guidangAll('确定要归档选中的数据吗?');">成交归档</a>
 									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -434,7 +441,50 @@
 				}
 			});
 		};
-		
+		function guidangAll(msg){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					var str = '';
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+					  if(document.getElementsByName('ids')[i].checked){
+					  	if(str=='') str += document.getElementsByName('ids')[i].value;
+					  	else str += ',' + document.getElementsByName('ids')[i].value;
+					  }
+					}
+					if(str==''){
+						bootbox.dialog({
+							message: "<span class='bigger-110'>您没有选择任何内容!</span>",
+							buttons: 			
+							{ "button":{ "label":"确定", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:1,
+				            msg:'点这里全选',
+				            bg:'#AE81FF',
+				            time:8
+				        });
+						return;
+					}else{
+						if(msg == '确定要归档选中的数据吗?'){
+							top.jzts();
+							$.ajax({
+								type: "POST",
+								url: '<%=basePath%>zhouse/guidangAll.do?tm='+new Date().getTime(),
+						    	data: {DATA_IDS:str},
+								dataType:'json',
+								//beforeSend: validateData,
+								cache: false,
+								success: function(data){
+									 $.each(data.list, function(i, list){
+											nextPage(${page.currentPage});
+									 });
+								}
+							});
+						}
+					}
+				}
+			});
+		};
 		//导出excel
 		function toExcel(){
 			window.location.href='<%=basePath%>zhouse/excel.do';

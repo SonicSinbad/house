@@ -32,6 +32,7 @@
 		
 		<!-- 页面顶部¨ -->
 		<%@ include file="head.jsp"%>
+		
 		<div id="websocket_button"></div><!-- 少了此处，聊天窗口就无法关闭 -->
 		<!-- /section:basics/navbar.layout -->
 		<div class="main-container" id="main-container">

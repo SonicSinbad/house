@@ -135,6 +135,18 @@
 		where 
 			MHOUSE_ID = #{MHOUSE_ID}
 	</select>
+	<!-- 通过bh获取数据 -->
+	<select id="findByBh" parameterType="pd" resultType="pd">
+		select 
+		     TFQZH
+		from 
+		<include refid="tableName"></include>
+		where 
+		<if test="TFQZH != null and TFQZH != ''">
+			TFQZH = #{TFQZH}
+		</if>
+			
+	</select>
 	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
@@ -173,7 +185,43 @@
 					and
 				czr LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 			</if>			
+			<if test="pd.name == 8">
+					and
+				xqmc LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+			</if>	
+				<!--	根据需求自己加检索条件
+					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				-->
 				
+		</if>
+		<if test="pd.sjzmj!= null and pd.sjzmj != ''"><!-- 关键词检索 -->
+		
+			<if test="pd.sjzmj == 1">
+					and
+				JZMJ &lt;= 40
+			</if>
+			<if test="pd.sjzmj == 2">
+					and
+				JZMJ &gt; 40 and JZMJ &lt;= 60
+			</if>			
+			<if test="pd.sjzmj == 3">
+					and
+				JZMJ &gt; 60 and JZMJ &lt;= 80
+			</if>
+			<if test="pd.sjzmj == 4">
+					and
+				JZMJ &gt; 80 and JZMJ &lt;= 100
+			</if>
+			<if test="pd.sjzmj == 5">
+					and
+				JZMJ &gt; 100 and JZMJ &lt;= 120
+			</if>
+			<if test="pd.sjzmj == 6">
+					and
+				JZMJ &gt; 120 
+			</if>
 				<!--	根据需求自己加检索条件
 					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
 					 or 
@@ -207,6 +255,15 @@
                  #{item}
 		</foreach>
 	</delete>
-	
+	<!-- 批量删除 -->
+	<insert  id="guidangAll" parameterType="String">
+		INSERT INTO tb_mhouse_b SELECT * FROM 
+		<include refid="tableName"></include>
+		where 
+			MHOUSE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</insert>
 	<!-- fh313596790qq(青苔) -->
 </mapper>

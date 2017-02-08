@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.shiro.session.Session;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
 import com.fh.entity.system.User;
@@ -93,6 +95,10 @@ public class ZhouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		pd.put("USERID", user.getUSER_ID());
+		pd.put("CZR", user.getNAME()); 
 		pd.put("CZSJ",new Date()); 
 		zhouseService.edit(pd);
 		mv.addObject("msg","success");
@@ -112,9 +118,27 @@ public class ZhouseController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		String keywords = pd.getString("keywords");				//关键词检索条件
-		if(null != keywords && !"".equals(keywords)){
-			pd.put("keywords", keywords.trim());
+		String name = pd.getString("name");
+		String lastLoginStart = pd.getString("lastLoginStart");
+		String lastLoginEnd = pd.getString("lastLoginEnd");
+		
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		
+		if("7".equals(name) || name == "7"){
+			pd.put("keywords", user.getNAME());
+			pd.put("name", Integer.parseInt(name.trim()));
 		}
+		else if(null != keywords && !"".equals(keywords) && null != name && !"".equals(name)){
+			pd.put("keywords", keywords.trim());
+			pd.put("name", Integer.parseInt(name.trim()));
+		}
+		
+		if(null != lastLoginStart && !"".equals(lastLoginStart) && null != lastLoginEnd && !"".equals(lastLoginEnd)){
+			pd.put("lastLoginStart", lastLoginStart.trim() + " 00:00:00");
+			pd.put("lastLoginEnd", lastLoginEnd.trim() + " 23:59:59");
+		}
+		
 		page.setPd(pd);
 		List<PageData>	varList = zhouseService.list(page);	//列出Zhouse列表
 		mv.setViewName("house/zhouse/zhouse_list");
@@ -122,13 +146,79 @@ public class ZhouseController extends BaseController {
 		mv.addObject("pd", pd);
 		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 		
-		Session session = Jurisdiction.getSession();
-		User user = (User) session.getAttribute(Const.SESSION_USER);
+//		Session session = Jurisdiction.getSession();
+//		User user = (User) session.getAttribute(Const.SESSION_USER);
 		String sessionUserid = user.getUSER_ID();
 		mv.addObject("userid",sessionUserid);
 		return mv;
 	}
+	/**列表(客户）
+ * @param page
+ * @throws Exception
+ */
+@RequestMapping(value="/list_c")
+public ModelAndView list_c(Page page) throws Exception{
+	logBefore(logger, Jurisdiction.getUsername()+"列表Zhouse");
+	//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+	ModelAndView mv = this.getModelAndView();
+	PageData pd = new PageData();
+	pd = this.getPageData();
+	String keywords = pd.getString("keywords");				//关键词检索条件
+	String name = pd.getString("name");
+	String lastLoginStart = pd.getString("lastLoginStart");
+	String lastLoginEnd = pd.getString("lastLoginEnd");
 	
+	Session session = Jurisdiction.getSession();
+	User user = (User) session.getAttribute(Const.SESSION_USER);
+	
+	if("7".equals(name) || name == "7"){
+		pd.put("keywords", user.getNAME());
+		pd.put("name", Integer.parseInt(name.trim()));
+	}
+	else if(null != keywords && !"".equals(keywords) && null != name && !"".equals(name)){
+		pd.put("keywords", keywords.trim());
+		pd.put("name", Integer.parseInt(name.trim()));
+	}
+	
+	if(null != lastLoginStart && !"".equals(lastLoginStart) && null != lastLoginEnd && !"".equals(lastLoginEnd)){
+		pd.put("lastLoginStart", lastLoginStart.trim() + " 00:00:00");
+		pd.put("lastLoginEnd", lastLoginEnd.trim() + " 23:59:59");
+	}
+	
+	page.setPd(pd);
+	List<PageData>	varList = zhouseService.list(page);	//列出Zhouse列表
+	mv.setViewName("house/zhouse/zhouse_list_c");
+	mv.addObject("varList", varList);
+	mv.addObject("pd", pd);
+	mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+	
+//	Session session = Jurisdiction.getSession();
+//	User user = (User) session.getAttribute(Const.SESSION_USER);
+	String sessionUserid = user.getUSER_ID();
+	mv.addObject("userid",sessionUserid);
+	return mv;
+}
+	/**判断唯一
+	 * @param out
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/bhIsOne")
+	@ResponseBody
+	public Object bhIsOne() {
+		Map<String,String> map = new HashMap<String,String>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		try{
+			pd = this.getPageData();
+			if(zhouseService.findByBh(pd) != null){
+				errInfo = "error";
+			}
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		map.put("result", errInfo);				//返回结果
+		return AppUtil.returnObject(new PageData(), map);
+	}
 	/**去新增页面
 	 * @param
 	 * @throws Exception
@@ -166,7 +256,7 @@ public class ZhouseController extends BaseController {
 	}	
 
 
- /**去修改页面
+		/**去浏览页面
 		 * @param
 		 * @throws Exception
 		 */
@@ -177,6 +267,37 @@ public class ZhouseController extends BaseController {
 			pd = this.getPageData();
 			pd = zhouseService.findById(pd);	//根据ID读取
 			mv.setViewName("house/zhouse/zhouse_view");
+			mv.addObject("msg", "view");
+			String bz = pd.getString("BZ");
+			pd.put("BZ", pd.get("ZHOUSE_ID"));
+//			List<PageData>	pathList = picturesService.pathList(pd);	//列出Pictures列表
+//			mv.addObject("pathList", pathList);
+			pd.put("BZ", bz); 
+			Session session = Jurisdiction.getSession();
+			User user = (User) session.getAttribute(Const.SESSION_USER);
+			String sessionUserid = user.getUSER_ID();
+			String zfuserid = pd.getString("USERID");
+			String isuserid = "";
+			if(sessionUserid.equals(zfuserid)){
+				isuserid = "0";
+			}else{
+				isuserid = "1";
+			}
+			mv.addObject("isuserid",isuserid);
+			mv.addObject("pd", pd);
+			return mv;
+		}	
+		/**去浏览页面(客户）
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/goView_c")
+		public ModelAndView goView_c()throws Exception{
+			ModelAndView mv = this.getModelAndView();
+			PageData pd = new PageData();
+			pd = this.getPageData();
+			pd = zhouseService.findById(pd);	//根据ID读取
+			mv.setViewName("house/zhouse/zhouse_view_c");
 			mv.addObject("msg", "view");
 			String bz = pd.getString("BZ");
 			pd.put("BZ", pd.get("ZHOUSE_ID"));
@@ -276,7 +397,31 @@ public class ZhouseController extends BaseController {
 		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
 	}
-	
+	/**批量归档
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/guidangAll")
+	@ResponseBody
+	public Object guidangAll() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"批量归档Zhouse");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+		PageData pd = new PageData();		
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		List<PageData> pdList = new ArrayList<PageData>();
+		String DATA_IDS = pd.getString("DATA_IDS");
+		if(null != DATA_IDS && !"".equals(DATA_IDS)){
+			String ArrayDATA_IDS[] = DATA_IDS.split(",");
+			zhouseService.guidangAll(ArrayDATA_IDS);
+			pd.put("msg", "ok");
+		}else{
+			pd.put("msg", "no");
+		}
+		pdList.add(pd);
+		map.put("list", pdList);
+		return AppUtil.returnObject(pd, map);
+	}
 	 /**导出到excel
 	 * @param
 	 * @throws Exception

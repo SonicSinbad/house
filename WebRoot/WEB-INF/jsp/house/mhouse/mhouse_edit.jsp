@@ -32,8 +32,8 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:100px;text-align: right;padding-top: 13px;">图符丘幢号:</td>
-								<td><input type="text" name="TFQZH" id="TFQZH" value="${pd.TFQZH}" maxlength="255" placeholder="这里输入图符丘幢号" title="图符丘幢号" style="width:98%;"/></td>
+								<td style="width:100px;text-align: right;padding-top: 13px;">房屋编号:</td>
+								<td><input type="text" name="TFQZH" id="TFQZH" value="${pd.TFQZH}" maxlength="255" placeholder="这里输入图符丘幢号" title="图符丘幢号" onblur="hasN()"  style="width:98%;"/></td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">小区名称:</td>
@@ -123,6 +123,7 @@
 											<option value="老式精装" <c:if test="${pd.ZXCD == '老式精装' }">selected</c:if>>老式精装</option>
 											<option value="豪华装修" <c:if test="${pd.ZXCD == '豪华装修' }">selected</c:if>>豪华装修</option>
 									</select>
+								</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">物业公司:</td>
@@ -131,10 +132,11 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">是否钥匙委托:</td>
 								<td>
-							<select  name="YNKEY"" id="YNKEY"  >  
+									<select  name="YNKEY"" id="YNKEY"  >  
 											<option value="是" <c:if test="${pd.YNKEY == '是' }">selected</c:if>>是</option>
 											<option value="否" <c:if test="${pd.YNKEY == '否' }">selected</c:if>>否</option>
 									</select>
+								</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">房主电话:</td>
@@ -150,7 +152,18 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">房源类别:</td>
-								<td><input type="text" name="FYLB" id="FYLB" value="${pd.FYLB}" maxlength="255" placeholder="这里输入房源类别" title="房源类别" style="width:98%;"/></td>
+							<!-- <td><input type="text" name="FYLB" id="FYLB" value="${pd.FYLB}" maxlength="255" placeholder="这里输入房源类别" title="房源类别" style="width:98%;"/></td>
+							 -->
+								<td>
+									<select  name="FYLB"" id="fylb"  >  
+											<option value="住宅" <c:if test="${pd.FYLB == '住宅' }">selected</c:if>>住宅</option>
+											<option value="门市" <c:if test="${pd.FYLB == '门市' }">selected</c:if>>门市</option>
+											<option value="车库" <c:if test="${pd.FYLB == '车库' }">selected</c:if>>车库</option>
+											<option value="别墅" <c:if test="${pd.FYLB == '别墅' }">selected</c:if>>别墅</option>
+											<option value="写字楼" <c:if test="${pd.FYLB == '写字楼' }">selected</c:if>>写字楼</option>
+									</select>
+
+								</td>							 	
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">房源保护:</td>
@@ -161,6 +174,7 @@
 											</select>
 								</td>
 							</tr>
+							<!-- 
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">层数性质:</td>
 								<td>
@@ -175,6 +189,7 @@
 
 								</td>
 							</tr>
+							 -->
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">行政区:</td>
 								<td>
@@ -183,7 +198,7 @@
 											<option value="昌邑区" <c:if test="${pd.AREA == '昌邑区' }">selected</c:if>>昌邑区</option>
 											<option value="高新区" <c:if test="${pd.AREA == '高新区' }">selected</c:if>>高新区</option>
 											<option value="丰满区" <c:if test="${pd.AREA == '丰满区' }">selected</c:if>>丰满区</option>
-											<option value="船营区" <c:if test="${pd.AREA == '船营区' }">selected</c:if>>船营区</option>
+											<option value="龙潭区" <c:if test="${pd.AREA == '龙潭区' }">selected</c:if>>龙潭区</option>
 											
 									</select>
 									
@@ -227,6 +242,7 @@
 	<%@ include file="../../system/index/foot.jsp"%>
 	<!-- 下拉框 -->
 	<script src="static/ace/js/chosen.jquery.js"></script>
+	<script src="static/ace/js/ace/ace.js"></script>
 	<!-- 日期框 -->
 	<script src="static/ace/js/date-time/bootstrap-datepicker.js"></script>
 	<!--提示框-->
@@ -238,7 +254,7 @@
 			if($("#TFQZH").val()==""){
 				$("#TFQZH").tips({
 					side:3,
-		            msg:'请输入图符丘幢号',
+		            msg:'请输入房屋编号',
 		            bg:'#AE81FF',
 		            time:2
 		        });
@@ -445,11 +461,34 @@
 				$("#BZ").focus();
 			return false;
 			}
+			
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
 		}
-		
+		//判断编码是否存在
+	function hasN(){
+		var TFQZH = $.trim($("#TFQZH").val()); 
+		$.ajax({
+			type: "POST",
+			url: '<%=basePath%>mhouse/bhIsOne.do',
+	    	data: {TFQZH:TFQZH},
+			dataType:'json',
+			cache: false,
+			success: function(data){
+				 if("success" != data.result){
+					 $("#TFQZH").tips({
+							side:3,
+				            msg:'编号 '+TFQZH+' 已存在',
+				            bg:'#AE81FF',
+				            time:3
+				        });
+					 $("#TFQZH").val('');
+				 }
+			}
+		});
+	}
+	
 		$(function() {
 			//日期框
 			$('.date-picker').datepicker({autoclose: true,todayHighlight: true});

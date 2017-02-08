@@ -61,6 +61,16 @@ public class MhouseController extends BaseController {
 		pd.put("USERID", user.getUSER_ID());  
 		pd.put("CZR", user.getNAME()); 
 		pd.put("CZSJ",new Date()); 
+		int CSXZ = Integer.parseInt(pd.get("ZCS").toString());
+		if(CSXZ <= 7)
+			pd.put("CSXZ", "多层");
+		else if(CSXZ >7 && CSXZ <=12)
+			pd.put("CSXZ", "小高层");
+		else if(CSXZ >12 && CSXZ <=24)
+			pd.put("CSXZ", "中高层");
+		else
+			pd.put("CSXZ", "大高层");
+		
 		mhouseService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
@@ -80,8 +90,28 @@ public class MhouseController extends BaseController {
 		mhouseService.delete(pd);
 		out.write("success");
 		out.close();
+	}    
+	/**判断唯一
+	 * @param out
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/bhIsOne")
+	@ResponseBody
+	public Object bhIsOne() {
+		Map<String,String> map = new HashMap<String,String>();
+		String errInfo = "success";
+		PageData pd = new PageData();
+		try{
+			pd = this.getPageData();
+			if(mhouseService.findByBh(pd) != null){
+				errInfo = "error";
+			}
+		} catch(Exception e){
+			logger.error(e.toString(), e);
+		}
+		map.put("result", errInfo);				//返回结果
+		return AppUtil.returnObject(new PageData(), map);
 	}
-	
 	/**修改
 	 * @param
 	 * @throws Exception
@@ -93,14 +123,29 @@ public class MhouseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		pd.put("USERID", user.getUSER_ID());  
+		pd.put("CZR", user.getNAME()); 
 		pd.put("CZSJ",new Date()); 
+		
+		int CSXZ = Integer.parseInt(pd.get("ZCS").toString());
+		if(CSXZ <= 7)
+			pd.put("CSXZ", "多层");
+		else if(CSXZ >7 && CSXZ <=12)
+			pd.put("CSXZ", "小高层");
+		else if(CSXZ >12 && CSXZ <=24)
+			pd.put("CSXZ", "中高层");
+		else
+			pd.put("CSXZ", "大高层");
+		
 		mhouseService.edit(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");
 		return mv;
 	}
 	
-	/**列表
+	/**内部人浏览列表
 	 * @param page
 	 * @throws Exception
 	 */
@@ -113,6 +158,7 @@ public class MhouseController extends BaseController {
 		pd = this.getPageData();
 		String keywords = pd.getString("keywords");				//关键词检索条件
 		String name = pd.getString("name");
+		String sjzmj = pd.getString("sjzmj");
 		String lastLoginStart = pd.getString("lastLoginStart");
 		String lastLoginEnd = pd.getString("lastLoginEnd");
 		
@@ -135,6 +181,9 @@ public class MhouseController extends BaseController {
 			pd.put("lastLoginEnd", lastLoginEnd.trim() + " 23:59:59");
 		}
 		
+		if(null != sjzmj && !"".equals(sjzmj))
+			pd.put("sjzmj", sjzmj);
+		
 		page.setPd(pd);
 		List<PageData>	varList = mhouseService.list(page);	//列出Zhouse列表
 		mv.setViewName("house/mhouse/mhouse_list");
@@ -144,7 +193,56 @@ public class MhouseController extends BaseController {
 		
 		return mv;
 	}
+
 	
+	/**客户浏览列表
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/list_c")
+	public ModelAndView list_c(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表Mhouse");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String keywords = pd.getString("keywords");				//关键词检索条件
+		String name = pd.getString("name");
+		String sjzmj = pd.getString("sjzmj");
+		String lastLoginStart = pd.getString("lastLoginStart");
+		String lastLoginEnd = pd.getString("lastLoginEnd");
+		
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		String sessionUserid = user.getUSER_ID();
+		mv.addObject("userid",sessionUserid);
+		
+		if("7".equals(name) || name == "7"){
+			pd.put("keywords", user.getNAME());
+			pd.put("name", Integer.parseInt(name.trim()));
+		}
+		else if(null != keywords && !"".equals(keywords) && null != name && !"".equals(name)){
+			pd.put("keywords", keywords.trim());
+			pd.put("name", Integer.parseInt(name.trim()));
+		}
+		
+		if(null != lastLoginStart && !"".equals(lastLoginStart) && null != lastLoginEnd && !"".equals(lastLoginEnd)){
+			pd.put("lastLoginStart", lastLoginStart.trim() + " 00:00:00");
+			pd.put("lastLoginEnd", lastLoginEnd.trim() + " 23:59:59");
+		}
+		
+		if(null != sjzmj && !"".equals(sjzmj))
+			pd.put("sjzmj", sjzmj);
+		
+		page.setPd(pd);
+		List<PageData>	varList = mhouseService.list(page);	//列出Zhouse列表
+		mv.setViewName("house/mhouse/mhouse_list_c");
+		mv.addObject("varList", varList);
+		mv.addObject("pd", pd);
+		mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+		
+		return mv;
+	}
 	/**去新增页面
 	 * @param
 	 * @throws Exception
@@ -175,7 +273,77 @@ public class MhouseController extends BaseController {
 		mv.addObject("pd", pd);
 		return mv;
 	}	
-	 /**去修改页面
+	/**去解锁页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goJiesuo")
+	public ModelAndView goJiesuo()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = mhouseService.findById(pd);	//根据ID读取
+		mv.setViewName("house/mhouse/mhouse_jiesuo");
+		mv.addObject("msg", "jiesuo");
+		mv.addObject("pd", pd);
+		return mv;
+	}	
+	/**解锁页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/jiesuo")
+	public ModelAndView jiesuo()throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"解锁Mhouse");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "jiesuo")){return null;} //校验权限
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = this.getPageData();
+		pd = mhouseService.findById(pd);	//根据ID读取
+		pd.put("FYBH", "0");
+		mhouseService.edit(pd);
+		mv.addObject("msg","success");
+		mv.setViewName("save_result");
+		return mv;
+	}	
+	/**去预定页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goYuding")
+	public ModelAndView goYuding()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = mhouseService.findById(pd);	//根据ID读取
+		mv.setViewName("house/mhouse/mhouse_yuding");
+		mv.addObject("msg", "yuding");
+		mv.addObject("pd", pd);
+		return mv;
+	}	
+	/**预定页面
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/yuding")
+	public ModelAndView yuding()throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"预定Mhouse");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "yuding")){return null;} //校验权限
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = this.getPageData();
+		pd = mhouseService.findById(pd);	//根据ID读取
+		pd.put("FYBH", "2");
+		String bz = pd.getString("BZ");
+		pd.put("BZ", bz);
+		mhouseService.edit(pd);
+		mv.addObject("msg","success");
+		mv.setViewName("save_result");
+		return mv;
+	}
+	 /**去浏览页面
 	 * @param
 	 * @throws Exception
 	 */
@@ -206,6 +374,37 @@ public class MhouseController extends BaseController {
 		mv.addObject("pd", pd);
 		return mv;
 	}	
+	 /**去浏览页面（客户）
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/goView_c")
+	public ModelAndView goView_c()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd = mhouseService.findById(pd);	//根据ID读取
+		mv.setViewName("house/mhouse/mhouse_view_c");
+		mv.addObject("msg", "view");
+		String bz = pd.getString("BZ");
+		pd.put("BZ", pd.get("MHOUSE_ID"));
+//		List<PageData>	pathList = picturesService.pathList(pd);	//列出Pictures列表
+//		mv.addObject("pathList", pathList);
+		pd.put("BZ", bz); 
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		String sessionUserid = user.getUSER_ID();
+		String zfuserid = pd.getString("USERID");
+		String isuserid = "";
+		if(sessionUserid.equals(zfuserid)){
+			isuserid = "0";
+		}else{
+			isuserid = "1";
+		}
+		mv.addObject("isuserid",isuserid);
+		mv.addObject("pd", pd);
+		return mv;
+	}
 	/**去预览图片
 	 * @param
 	 * @throws Exception
@@ -285,7 +484,31 @@ public class MhouseController extends BaseController {
 		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
 	}
-	
+	 /**批量归档
+		 * @param
+		 * @throws Exception
+		 */
+		@RequestMapping(value="/guidangAll")
+		@ResponseBody
+		public Object guidangAll() throws Exception{
+			logBefore(logger, Jurisdiction.getUsername()+"批量归档Mhouse");
+			if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;} //校验权限
+			PageData pd = new PageData();		
+			Map<String,Object> map = new HashMap<String,Object>();
+			pd = this.getPageData();
+			List<PageData> pdList = new ArrayList<PageData>();
+			String DATA_IDS = pd.getString("DATA_IDS");
+			if(null != DATA_IDS && !"".equals(DATA_IDS)){
+				String ArrayDATA_IDS[] = DATA_IDS.split(",");
+				mhouseService.guidangAll(ArrayDATA_IDS);
+				pd.put("msg", "ok");
+			}else{
+				pd.put("msg", "no");
+			}
+			pdList.add(pd);
+			map.put("list", pdList);
+			return AppUtil.returnObject(pd, map);
+		}
 	 /**导出到excel
 	 * @param
 	 * @throws Exception

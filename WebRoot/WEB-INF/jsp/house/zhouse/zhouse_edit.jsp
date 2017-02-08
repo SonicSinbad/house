@@ -31,6 +31,25 @@
 						<input type="hidden" name="ZHOUSE_ID" id="ZHOUSE_ID" value="${pd.ZHOUSE_ID}"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
+						
+						
+							<tr>
+								<td style="width:100px;text-align: right;padding-top: 13px;">房屋编号:</td>
+								<td><input type="text" name="TFQZH" id="TFQZH" value="${pd.TFQZH}" maxlength="255" placeholder="这里输入图符丘幢号" title="图符丘幢号" onblur="hasN()"  style="width:98%;"/></td>
+							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">行政区:</td>
+								<td>
+								<select  name="AREA"" id="AREA"  >  
+											<option value="船营区" <c:if test="${pd.AREA == '船营区' }">selected</c:if>>船营区</option>
+											<option value="昌邑区" <c:if test="${pd.AREA == '昌邑区' }">selected</c:if>>昌邑区</option>
+											<option value="高新区" <c:if test="${pd.AREA == '高新区' }">selected</c:if>>高新区</option>
+											<option value="丰满区" <c:if test="${pd.AREA == '丰满区' }">selected</c:if>>丰满区</option>
+											<option value="龙潭区" <c:if test="${pd.AREA == '龙潭区' }">selected</c:if>>龙潭区</option>
+											
+									</select>
+									
+								</td></tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">出租房源:</td>
 								<td><input type="text" name="CZFY" id="CZFY" value="${pd.CZFY}" maxlength="255" placeholder="这里输入出租房源" title="出租房源" style="width:98%;"/></td>
@@ -130,7 +149,13 @@
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">是否委托:</td>
-								<td><input type="text" name="YNKEY" id="YNKEY" value="${pd.YNKEY}" maxlength="255" placeholder="这里输入是否委托" title="是否委托" style="width:98%;"/></td>
+								<!-- <td><input type="text" name="YNKEY" id="YNKEY" value="${pd.YNKEY}" maxlength="255" placeholder="这里输入是否委托" title="是否委托" style="width:98%;"/></td> -->
+								<td>
+									<select  name="YNKEY"" id="YNKEY"  >  
+											<option value="是" <c:if test="${pd.YNKEY == '是' }">selected</c:if>>是</option>
+											<option value="否" <c:if test="${pd.YNKEY == '否' }">selected</c:if>>否</option>
+									</select>
+								</td>
 							</tr>
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">备注:</td>
@@ -175,6 +200,16 @@
 		$(top.hangge());
 		//保存
 		function save(){
+			if($("#TFQZH").val()==""){
+				$("#TFQZH").tips({
+					side:3,
+		            msg:'请输入房屋编号',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#TFQZH").focus();
+			return false;
+			}
 			if($("#CZFY").val()==""){
 				$("#CZFY").tips({
 					side:3,
@@ -379,7 +414,28 @@
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
 		}
-		
+		//判断编码是否存在
+	function hasN(){
+		var TFQZH = $.trim($("#TFQZH").val()); 
+		$.ajax({
+			type: "POST",
+			url: '<%=basePath%>zhouse/bhIsOne.do',
+	    	data: {TFQZH:TFQZH},
+			dataType:'json',
+			cache: false,
+			success: function(data){
+				 if("success" != data.result){
+					 $("#TFQZH").tips({
+							side:3,
+				            msg:'编号 '+TFQZH+' 已存在',
+				            bg:'#AE81FF',
+				            time:3
+				        });
+					 $("#TFQZH").val('');
+				 }
+			}
+		});
+	}
 		$(function() {
 			//日期框
 			$('.date-picker').datepicker({autoclose: true,todayHighlight: true});

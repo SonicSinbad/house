@@ -47,12 +47,21 @@ public interface MhouseManager{
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception;
-	
+	/**列表(全部)
+	 * @param pd
+	 * @throws Exception
+	 */
+	public PageData findByBh(PageData pd)throws Exception;
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
+	 * 
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
-	
+	/**批量成交
+	 * @param ArrayDATA_IDS
+	 * @throws Exception
+	 */
+	public void guidangAll(String[] ArrayDATA_IDS)throws Exception;
 }
 

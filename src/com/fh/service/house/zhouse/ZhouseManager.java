@@ -53,6 +53,12 @@ public interface ZhouseManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+	/**批量成交
+	 * @param ArrayDATA_IDS
+	 * @throws Exception
+	 */
+	public void guidangAll(String[] ArrayDATA_IDS)throws Exception;
 	
+	public PageData findByBh(PageData pd)throws Exception;
 }
 

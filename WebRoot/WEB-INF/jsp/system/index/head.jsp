@@ -32,6 +32,7 @@
 				<!-- #section:basics/navbar.dropdown -->
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
+						<!-- 
 						<li class="grey">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-tasks"></i>
@@ -51,8 +52,9 @@
 								</li>
 							</ul>
 						</li>
-
-						<li title="即时聊天" class="purple"  onclick="creatw();"><!-- creatw()在 WebRoot\plugins\websocketInstantMsg\websocket.js中 -->
+						 -->
+						 <!-- creatw()在 WebRoot\plugins\websocketInstantMsg\websocket.js中 --><!--  
+						<li title="即时聊天" class="purple"  onclick="creatw();">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-bell icon-animated-bell"></i>
 								<span class="badge badge-important"></span>
@@ -65,14 +67,15 @@
 								</li>
 							</ul>
 						</li>
-
-						<li title="站内信" class="green" onclick="fhsms();" id="fhsmstss"><!-- fhsms()在 WebRoot\static\js\myjs\head.js中 -->
+-->
+						<!-- fhsms()在 WebRoot\static\js\myjs\head.js中 --><!-- 
+						<li title="站内信" class="green" onclick="fhsms();" id="fhsmstss">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
 								<span class="badge badge-success" id="fhsmsCount"></span>
 							</a>
 						</li>
-
+ -->
 						<!-- #section:basics/navbar.user_menu -->
 						<li class="light-blue">
 							<a data-toggle="dropdown"  class="dropdown-toggle" href="#">
