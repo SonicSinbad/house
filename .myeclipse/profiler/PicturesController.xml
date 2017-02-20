@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="profiler.settings.instrument.empty.methods">true</entry>
+<entry key="ProfilerCPUSettings_profile_runnables">true</entry>
+<entry key="profiler.settings.n.profiled.threads.limit">32</entry>
+<entry key="ProfilerCPUSettings_filter_type">2</entry>
+<entry key="profiler.settings.obj.alloc.stack.sampling.depth">-1</entry>
+<entry key="profiler.settings.instrument.method.invoke">true</entry>
+<entry key="profiler.settings.instr.scheme">1</entry>
+<entry key="ProfilerMemorySettings_track_every">10</entry>
+<entry key="ProfilerMemorySettings_mode">4</entry>
+<entry key="ProfilerCPUSettings_root_classes">com.fh.controller.app.appuser.**
+com.fh.controller.base.**
+com.fh.controller.car.car.**
+com.fh.controller.house.mhouse.**
+com.fh.controller.house.zhouse.**
+com.fh.controller.information.pictures.**
+com.fh.controller.system.appuser.**
+com.fh.controller.system.buttonrights.**
+com.fh.controller.system.createcode.**
+com.fh.controller.system.department.**
+com.fh.controller.system.dictionaries.**
+com.fh.controller.system.fhbutton.**
+com.fh.controller.system.fhsms.**
+com.fh.controller.system.head.**
+com.fh.controller.system.login.**
+com.fh.controller.system.menu.**
+com.fh.controller.system.onlinemanager.**
+com.fh.controller.system.role.**
+com.fh.controller.system.secCode.**
+com.fh.controller.system.tools.**
+com.fh.controller.system.user.**
+com.fh.controller.weixin.**
+com.fh.dao.**
+com.fh.entity.**
+com.fh.filter.**
+com.fh.interceptor.**
+com.fh.listener.**
+com.fh.plugin.**
+com.fh.resolver.**
+com.fh.service.car.car.**
+com.fh.service.house.mhouse.**
+com.fh.service.house.zhouse.**
+com.fh.service.information.pictures.**
+com.fh.service.system.appuser.**
+com.fh.service.system.buttonrights.**
+com.fh.service.system.createcode.**
+com.fh.service.system.department.**
+com.fh.service.system.dictionaries.**
+com.fh.service.system.fhbutton.**
+com.fh.service.system.fhsms.**
+com.fh.service.system.menu.**
+com.fh.service.system.role.**
+com.fh.service.system.user.**
+com.fh.service.weixin.command.**
+com.fh.service.weixin.imgmsg.**
+com.fh.service.weixin.textmsg.**
+com.fh.util.**
+</entry>
+<entry key="ProfilerCPUSettings_filter_value">com.fh.controller.app.appuser.*,&#13;
+com.fh.controller.base.*,&#13;
+com.fh.controller.car.car.*,&#13;
+com.fh.controller.house.mhouse.*,&#13;
+com.fh.controller.house.zhouse.*,&#13;
+com.fh.controller.information.pictures.*,&#13;
+com.fh.controller.system.appuser.*,&#13;
+com.fh.controller.system.buttonrights.*,&#13;
+com.fh.controller.system.createcode.*,&#13;
+com.fh.controller.system.department.*,&#13;
+com.fh.controller.system.dictionaries.*,&#13;
+com.fh.controller.system.fhbutton.*,&#13;
+com.fh.controller.system.fhsms.*,&#13;
+com.fh.controller.system.head.*,&#13;
+com.fh.controller.system.login.*,&#13;
+com.fh.controller.system.menu.*,&#13;
+com.fh.controller.system.onlinemanager.*,&#13;
+com.fh.controller.system.role.*,&#13;
+com.fh.controller.system.secCode.*,&#13;
+com.fh.controller.system.tools.*,&#13;
+com.fh.controller.system.user.*,&#13;
+com.fh.controller.weixin.*,&#13;
+com.fh.dao.*,&#13;
+com.fh.entity.*,&#13;
+com.fh.filter.*,&#13;
+com.fh.interceptor.*,&#13;
+com.fh.listener.*,&#13;
+com.fh.plugin.*,&#13;
+com.fh.resolver.*,&#13;
+com.fh.service.car.car.*,&#13;
+com.fh.service.house.mhouse.*,&#13;
+com.fh.service.house.zhouse.*,&#13;
+com.fh.service.information.pictures.*,&#13;
+com.fh.service.system.appuser.*,&#13;
+com.fh.service.system.buttonrights.*,&#13;
+com.fh.service.system.createcode.*,&#13;
+com.fh.service.system.department.*,&#13;
+com.fh.service.system.dictionaries.*,&#13;
+com.fh.service.system.fhbutton.*,&#13;
+com.fh.service.system.fhsms.*,&#13;
+com.fh.service.system.menu.*,&#13;
+com.fh.service.system.role.*,&#13;
+com.fh.service.system.user.*,&#13;
+com.fh.service.weixin.command.*,&#13;
+com.fh.service.weixin.imgmsg.*,&#13;
+com.fh.service.weixin.textmsg.*,&#13;
+com.fh.util.*</entry>
+<entry key="profiler.settings.istrument.getter.setter.methods">true</entry>
+<entry key="myeclipse.profiling.mode">0</entry>
+<entry key="ProfilerMemorySettings_stacktraces">-1</entry>
+<entry key="profiler.settings.sampling.interval">10</entry>
+<entry key="profiler.settings.cpu.profiling.type">0</entry>
+</properties>
